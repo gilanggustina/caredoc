@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Set direktori kerja
-WORKDIR /var/www/html
+WORKDIR /var/www
 
 # Salin file composer dan jalankan install
 COPY composer.json composer.json
@@ -29,8 +29,8 @@ RUN composer dump-autoload
 
 # Atur izin yang diperlukan
 RUN chown -R www-data:www-data \
-    /var/www/html/storage \
-    /var/www/html/bootstrap/cache
+    /var/www/storage \
+    /var/www/bootstrap/cache
 
 # Expose port
 EXPOSE 9000
