@@ -1,0 +1,65 @@
+version: '3.7'
+services:
+
+  #Nginx Service
+  caredoc_webserver:
+    image: nginx:alpine
+    container_name: caredoc_webserver
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "8000:80"
+      - "8444:443"
+    volumes:
+      - ./src:/var/www
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+      - ./logs:/var/log/nginx
+    networks:
+      - caredoc_network
+
+  #PHP Service
+  caredor_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: caredoc/php
+    container_name: caredor_app
+    restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: caredor_app
+      SERVICE_TAGS: prod
+    working_dir: /var/www
+    volumes:
+      #- ./src:/var/www
+      - ./storage:/var/www/storage
+      - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+      - ./src/.env:/var/www/.env
+      - ./src/.styleci.yml:/var/www/.styleci.yml
+      - ./src/README.md:/var/www/README.md
+      - ./src/app:/var/www/app
+      - ./src/artisan:/var/www/artisan
+      - ./src/bootstrap:/var/www/bootstrap
+      - ./src/config:/var/www/config
+      - ./src/database:/var/www/database
+      - ./src/package-lock.json:/var/www/package-lock.json
+      - ./src/package.json:/var/www/package.json
+      - ./src/phpunit.xml:/var/www/phpunit.xml
+      - ./src/public:/var/www/public
+      - ./src/resources:/var/www/resources
+      - ./src/routes:/var/www/routes
+      - ./src/server.php:/var/www/server.php
+      - ./src/tests:/var/www/tests
+      - ./src/webpack.mix.js:/var/www/webpack.mix.js
+      - ./src/laravel-log.job:/var/www/storage/logs/laravel-log.job
+    networks:
+      - caredoc_network
+
+#Docker Networks
+networks:
+  caredoc_network:
+    driver: bridge
+#Volumes
+volumes:
+  dbdata:
+    driver: local

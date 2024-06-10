@@ -15,7 +15,7 @@
                     <li><a href="{!! route('index') !!}/#about" class="scroll">Tentang</a></li>
                     <li><a href="{!! route('index') !!}/#caredoc" class="scroll">Caredoc</a></li>
                     <li><a href="{!! route('index') !!}/#reservasi" class="scroll">Reservasi</a></li>
-                    <li class="{{ request()->segment(1) == 'illness' ? 'active' : 'active' }}"><a href="{!!route('illness.index')!!}">Penyakit</a></li>
+                    <li class="{{ request()->segment(1) == 'illness' ? 'active' : 'active' }}"><a href="{!!route('illness.index')!!}">Artikel</a></li>
                     {{-- <li><a href="tim.php">Tim</a></li> --}}
                 </ul>
                 <!-- nav-toggler for mobile version only -->
