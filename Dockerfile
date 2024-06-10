@@ -1,39 +1,38 @@
-# Gunakan image PHP dengan FPM
 FROM php:7.4-fpm
 
-# Install dependencies
+# Install dependensi yang dibutuhkan oleh Laravel
 RUN apt-get update && apt-get install -y \
-    build-essential \
     libpng-dev \
-    libjpeg62-turbo-dev \
+    libjpeg-dev \
     libfreetype6-dev \
-    locales \
     zip \
-    jpegoptim optipng pngquant gifsicle \
-    vim \
     unzip \
-    git \
-    curl
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd pdo pdo_mysql
 
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+# Instal Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl xml json
+# Set direktori kerja
+WORKDIR /var/www/html
 
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Salin file composer dan jalankan install
+COPY composer.json composer.json
+COPY composer.lock composer.lock
+RUN composer install --no-scripts --no-autoloader
 
-# Copy aplikasi ke dalam container
-COPY . /var/www
+# Salin semua file ke dalam image
+COPY . .
 
-# Set working directory
-WORKDIR /var/www
+# Generate autoload
+RUN composer dump-autoload
 
-# Beri izin pada direktori
-RUN chown -R www-data:www-data /var/www \
-    && chmod -R 755 /var/www/storage
+# Atur izin yang diperlukan
+RUN chown -R www-data:www-data \
+    /var/www/html/storage \
+    /var/www/html/bootstrap/cache
 
-# Expose port 9000 dan start PHP-FPM server
+# Expose port
 EXPOSE 9000
+
 CMD ["php-fpm"]

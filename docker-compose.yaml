@@ -24,7 +24,7 @@ services:
 
   web:
     image: nginx:latest
-    container_name: laravel-web
+    container_name: caredoc-web
     restart: unless-stopped
     ports:
       - "80:80"
