@@ -1,16 +1,10 @@
+# Gunakan image PHP dengan FPM
 FROM php:7.4-fpm
-
-# Copy composer.lock and composer.json
-COPY ./src/composer.json /var/www/
-
-# Set working directory
-WORKDIR /var/www
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpng-dev \
-    libonig-dev \
     libjpeg62-turbo-dev \
     libfreetype6-dev \
     locales \
@@ -19,48 +13,27 @@ RUN apt-get update && apt-get install -y \
     vim \
     unzip \
     git \
-    nano \
-    curl \
-    libzip-dev \
-    libcurl4-openssl-dev \
-    libxml2-dev
+    curl
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install extensions
-RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl curl xml json
-RUN docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/
-RUN docker-php-ext-install gd
+# Install PHP extensions
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
-# Install composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-ENV WEB_DOCUMENT_ROOT /var/www/public
-ENV APP_ENV local
-ENV COMPOSER_ALLOW_SUPERUSER 1
+# Copy aplikasi ke dalam container
+COPY . /var/www
+
+# Set working directory
 WORKDIR /var/www
 
-# Copy existing application directory contents
-COPY ./src /var/www
+# Beri izin pada direktori
+RUN chown -R www-data:www-data /var/www \
+    && chmod -R 755 /var/www/storage
 
-# Copy existing application directory permissions
-COPY --chown=www-data:www-data ./src /var/www
-RUN chown -R www-data:www-data /var/www
-
-RUN composer update
-RUN composer install
-RUN chown -R www-data:www-data /var/www
-RUN php artisan config:cache
-RUN php artisan storage:link
-RUN php artisan clear-compiled
-RUN php artisan queue:listen --queue=verifyMail > /var/www/storage/logs/laravel-log.job &
-RUN php artisan queue:listen --queue=forgotPassword > /var/www/storage/logs/laravel-log.job &
-#RUN php artisan route:cache
-#RUN php artisan view:cache
-# Change current user to www
-USER www-data
-
-# Expose port 9000 and start php-fpm server
+# Expose port 9000 dan start PHP-FPM server
 EXPOSE 9000
 CMD ["php-fpm"]
