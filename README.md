@@ -22,9 +22,9 @@
 open your terminal, go to the directory that you will install this project, then run the following command:
 
 ```bash
-git clone https://github.com/gilanggustina/qwords-test.git
+git clone https://github.com/gilanggustina/caredoc.git
 
-cd qwords-test 
+cd caredoc 
 ```
 
 ### Install packages
