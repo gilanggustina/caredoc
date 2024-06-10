@@ -12,11 +12,11 @@ services:
       - APP_ENV=local
       - APP_DEBUG=true
       - APP_KEY=base64:YOUR_APP_KEY
-      - DB_HOST=your-rds-endpoint
+      - DB_HOST=caredoc.cluster-c90ggcmwk096.us-east-1.rds.amazonaws.com
       - DB_PORT=3306
-      - DB_DATABASE=your-database-name
-      - DB_USERNAME=your-username
-      - DB_PASSWORD=your-password
+      - DB_DATABASE=caredoc
+      - DB_USERNAME=apps_admin
+      - DB_PASSWORD=dvHyxp6i0OOiZEsqM2J6
     ports:
       - "9000:9000"
     volumes:
