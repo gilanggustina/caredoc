@@ -27,7 +27,7 @@ services:
     container_name: caredoc-web
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "8080:80"
     volumes:
       - .:/var/www
       - ./nginx:/etc/nginx/conf.d
