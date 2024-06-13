@@ -1,0 +1,95 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.EC2_PRIVATE_KEY }}
+
+      - name: Update and install dependencies on EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script: |
+            sudo apt-get update
+            sudo apt-get install -y git docker.io docker-compose-plugin || {
+              DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+              mkdir -p $DOCKER_CONFIG/cli-plugins
+              curl -SL https://github.com/docker/compose/releases/download/v2.27.1/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
+              chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
+            }
+
+      - name: Set up project directory on EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script: |
+            cd /var/www/caredoc
+            if [ ! -d "/var/www/caredoc/src" ]; then
+              git clone https://github.com/${{ secrets.USERNAME_GITHUB }}/${{ secrets.REPO_GITHUB }}.git
+              cp -r /var/www/caredoc/src/caredoc/* /var/www/caredoc/src/
+              sudo rm -rf /var/www/caredoc/src/caredoc
+            fi
+            git config --global user.name "${{ secrets.USERNAME_GITHUB }}"
+            sudo usermod -aG docker $USER
+            sudo chmod -R 777 /var/w ww/caredoc/src
+            cd /var/www/caredoc/src
+            git init
+            git pull origin master
+            sudo chmod -R 777 storage
+            sudo cp .env.example .env
+
+      - name: Enable and start Docker on EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script: |
+            sudo systemctl enable docker
+            sudo systemctl start docker
+            sudo chmod 666 /var/run/docker.sock
+
+      - name: Build and run Docker containers on EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script: |
+            cd ~
+            cd ~/var/www/caredoc
+            docker stop caredoc_app || true
+            docker rm caredoc_app || true
+            docker stop nginxcaredoc || true
+            docker rm nginxcaredoc || true
+            docker compose build
+            docker compose up -d
+
+      - name: Run Laravel setup commands in Docker
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script: |
+            docker exec caredoc_app /bin/bash -c "
+              composer install &&
+              php artisan migrate:fresh --seed
+            "
