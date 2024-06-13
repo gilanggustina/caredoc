@@ -1,38 +1,40 @@
-FROM php:7.4-fpm
+FROM php:8.3-fpm
 
-# Install dependensi yang dibutuhkan oleh Laravel
+COPY composer.* /var/www/caredoc/
+
+WORKDIR /var/www/caredoc
+
 RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    zip \
-    unzip \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_mysql
+build-essential \
+libmcrypt-dev \
+mariadb-client \
+libpng-dev \
+libjpeg62-turbo-dev \
+libfreetype6-dev \
+locales \
+jpegoptim optipng pngquant gifsicle \
+vim \
+unzip \
+git \
+curl \
+libzip-dev \
+zip
 
-# Instal Composer
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN docker-php-ext-install pdo pdo_mysql gd zip
+
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Set direktori kerja
-WORKDIR /var/www
+RUN groupadd -g 1000 www
+RUN useradd -u 1000 -ms /bin/bash -g www www
 
-# Salin file composer dan jalankan install
-COPY composer.json composer.json
-COPY composer.lock composer.lock
-RUN composer install --no-scripts --no-autoloader
-
-# Salin semua file ke dalam image
 COPY . .
 
-# Generate autoload
-RUN composer dump-autoload
+COPY --chown=www:www . .
 
-# Atur izin yang diperlukan
-RUN chown -R www-data:www-data \
-    /var/www/storage \
-    /var/www/bootstrap/cache
+USER www
 
-# Expose port
 EXPOSE 9000
 
-CMD ["php-fpm"]
+CMD [ "php-fpm" ]

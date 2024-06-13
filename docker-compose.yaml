@@ -1,37 +1,68 @@
-version: '3.9'
-
+version: '3'
 services:
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: caredoc-app
-    container_name: caredoc-app
+    build: .
+    image: caredoc
+    container_name: caredoc_app
     restart: unless-stopped
+    tty: true
     environment:
-      - APP_ENV=local
-      - APP_DEBUG=true
-      - APP_KEY=base64:YOUR_APP_KEY
-      - DB_HOST=caredoc.cluster-c90ggcmwk096.us-east-1.rds.amazonaws.com
-      - DB_PORT=3306
-      - DB_DATABASE=caredoc
-      - DB_USERNAME=apps_admin
-      - DB_PASSWORD=dvHyxp6i0OOiZEsqM2J6
-    ports:
-      - "9000:9000"
+      SERVICE_NAME: app
+    working_dir: /var/www/caredoc
     volumes:
-      - .:/var/www
+      - .:/var/www/caredoc
+      - ./storage/php.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - caredoc
 
-  web:
-    image: nginx:latest
-    container_name: caredoc-web
+  webserver:
+    image: nginx:alpine
+    container_name: nginxcaredoc
     restart: unless-stopped
+    tty: true
     ports:
-      - "8002:80"
-      - "8444:443"
+      - "2022:80"
     volumes:
-      - .:/var/www
-      - ./nginx:/etc/nginx/conf.d
+      - .:/var/www/caredoc
+      - ./storage/:/etc/nginx/conf.d/
+    networks:
+      - caredoc
 
+  db:
+    image: mysql:5.7
+    container_name: dbcaredoc
+    restart: always
+    tty: true
+    ports:
+      - "2023:3306"
+    volumes:
+      - lbdata:/var/lib/mysql
+    environment:
+      MYSQL_PASSWORD: caredoc
+      MYSQL_ROOT_PASSWORD: caredoc
+      MYSQL_DATABASE: caredoc-local
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    networks:
+      - caredoc
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: pmacaredoc
+    links:
+      - db
+    restart: always
+    ports:
+      - "7000:80"
+    networks:
+      - caredoc
+
+#NETWORK
+networks:
+  caredoc:
+    driver: bridge
+
+#VOLUMES
 volumes:
-  dbdata:
+  lbdata:
+    driver: local
