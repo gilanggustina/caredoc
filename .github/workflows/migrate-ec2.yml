@@ -75,9 +75,5 @@ jobs:
           script: |
             cd ~
             cd /var/www/caredoc
-            docker stop caredoc_app || true
-            docker rm caredoc_app || true
-            docker stop nginxcaredoc || true
-            docker rm nginxcaredoc || true
-            docker compose build
-            docker compose up -d
+            docker compose down
+            docker compose up -d --build
