@@ -81,15 +81,3 @@ jobs:
             docker rm nginxcaredoc || true
             docker compose build
             docker compose up -d
-
-      - name: Run Laravel setup commands in Docker
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
-          script: |
-            docker exec caredoc_app /bin/bash -c "
-              composer install &&
-              php artisan migrate:fresh --seed
-            "
