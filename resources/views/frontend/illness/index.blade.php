@@ -5,7 +5,7 @@
   </div>
   <div class="container-fluid p-3">
     <div class="row">
-      @foreach ($illnesses as $key => $illness)
+      @forelse ($illnesses as $key => $illness)
         <div class="col-sm-6 p-3">
             <div class="container">
                 <div class="card sdh2 mb-3" data-aos="fade-up" data-aos-duration="1000">
@@ -29,7 +29,17 @@
                 </div>
             </div>
         </div>
-      @endforeach
+      @empty
+        <div class="container pdt">
+          <div class="site">
+            <div class="sketch">
+                <div class="bee-sketch red"></div>
+                <div class="bee-sketch blue"></div>
+            </div>
+            <h1><small>Maaf data penyakit <span class="font-weight-bold" style="text-decoration:underline;">{{request()->get('keyword')}}</span> yang anda cari belum tersedia.</h1>
+          </div>
+        </div>
+      @endforelse
     </div>
   </div>
 @endsection

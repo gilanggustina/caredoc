@@ -95,9 +95,9 @@
                 <img src="{!!asset('assets/images/Untitled-2.gif')!!}" alt="caredoc">
             </div>
             <div class="container-form">
-                <form action="penyakit.php" method="get" id="search-form">
+                <form action="{!! route('illness.index') !!}" method="get" id="search-form">
                     <div class="input-group mb-3">
-                        <input id="textbox" name="q" type="text" placeholder="Masukan apa yang anda rasakan..." autocomplete="off" required>
+                        <input id="textbox" name="keyword" type="text" placeholder="Masukan apa yang anda rasakan..." autocomplete="off" required>
                         <div class="input-group-append">
                             <!-- <button type="submit" class="d-none"></button> -->
                             <button type="button" class="btn btn-light btn-lg mr-1" id="start-btn" title="Start">
