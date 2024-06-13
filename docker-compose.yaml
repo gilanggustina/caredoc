@@ -1,0 +1,60 @@
+version: '3.7'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: caredoc
+    container_name: caredoc_app
+    restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: caredoc_app
+    working_dir: /var/www
+    volumes:
+      - ./storage:/var/www/storage
+      - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+      - ./src/.env:/var/www/.env
+      - ./src/.styleci.yml:/var/www/.styleci.yml
+      - ./src/app:/var/www/app
+      - ./src/artisan:/var/www/artisan
+      - ./src/bootstrap:/var/www/bootstrap
+      - ./src/config:/var/www/config
+      - ./src/database:/var/www/database
+      - ./src/package-lock.json:/var/www/package-lock.json
+      - ./src/package.json:/var/www/package.json
+      - ./src/phpunit.xml:/var/www/phpunit.xml
+      - ./src/public:/var/www/public
+      - ./src/resources:/var/www/resources
+      - ./src/routes:/var/www/routes
+      - ./src/server.php:/var/www/server.php
+      - ./src/tests:/var/www/tests
+      - ./src/webpack.mix.js:/var/www/webpack.mix.js
+      - ./src/laravel-log.job:/var/www/storage/logs/laravel-log.job
+      - ./src/bootstrap/cache:/var/www/bootstrap/cache
+    networks:
+      - caredoc
+
+  webserver:
+    image: nginx:alpine
+    container_name: nginxcaredoc
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "2022:80"
+    volumes:
+      - ./src:/var/www
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+      - ./logs:/var/log/nginx
+    networks:
+      - caredoc
+      
+#NETWORK
+networks:
+  caredoc:
+    driver: bridge
+
+#VOLUMES
+volumes:
+  dbdata:
+    driver: local
