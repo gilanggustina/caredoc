@@ -3,7 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
@@ -32,11 +34,15 @@ class UserSeeder extends Seeder
         Permission::create(['name' => 'delete empty illness']);
 
         $role = Role::create(['name' => 'admin'])->givePermissionTo(Permission::all());
-        User::factory()
-        ->count(1)
-        ->create()
-        ->each(function ($user) {
-            $user->assignRole('admin');
-        });
+        $admin = User::create([
+            'name' => 'Admin Caredoc',
+            'email' => 'admin@gmail.com',
+            'email_verified_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'password' => Hash::make('12345678'),
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
+        ]);
+
+        $admin->assignRole($role);
     }
 }
