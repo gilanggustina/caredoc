@@ -74,7 +74,7 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
             cd ~
-            cd ~/var/www/caredoc
+            cd /var/www/caredoc
             docker stop caredoc_app || true
             docker rm caredoc_app || true
             docker stop nginxcaredoc || true
