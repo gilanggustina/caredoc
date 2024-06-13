@@ -14,14 +14,6 @@ services:
       - ./storage/php.ini:/usr/local/etc/php/conf.d/local.ini
     networks:
       - caredoc
-  
-  php:
-    image: php:8.3-fpm
-    container_name: caredoc_php
-    volumes:
-      - ./src:/var/www/caredoc
-    networks:
-      - caredoc
 
   webserver:
     image: nginx:alpine
@@ -37,35 +29,14 @@ services:
       - php
     networks:
       - caredoc
-
-  # db:
-  #   image: mysql:5.7
-  #   container_name: dbcaredoc
-  #   restart: always
-  #   tty: true
-  #   ports:
-  #     - "2023:3306"
-  #   volumes:
-  #     - lbdata:/var/lib/mysql
-  #   environment:
-  #     MYSQL_PASSWORD: caredoc
-  #     MYSQL_ROOT_PASSWORD: caredoc
-  #     MYSQL_DATABASE: caredoc-local
-  #     SERVICE_TAGS: dev
-  #     SERVICE_NAME: mysql
-  #   networks:
-  #     - caredoc
-
-  # phpmyadmin:
-  #   image: phpmyadmin/phpmyadmin
-  #   container_name: pmacaredoc
-  #   links:
-  #     - db
-  #   restart: always
-  #   ports:
-  #     - "7000:80"
-  #   networks:
-  #     - caredoc
+  
+  php:
+    image: php:8.3-fpm
+    container_name: caredoc_php
+    volumes:
+      - ./src:/var/www/caredoc
+    networks:
+      - caredoc
 
 #NETWORK
 networks:
