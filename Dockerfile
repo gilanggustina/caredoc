@@ -1,8 +1,8 @@
 FROM php:8.3-fpm
 
-COPY composer.* /var/www/caredoc/
+COPY composer.* /var/www/
 
-WORKDIR /var/www/caredoc
+WORKDIR /var/www
 
 RUN apt-get update && apt-get install -y \
 build-essential \
@@ -35,12 +35,19 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN groupadd -g 1000 www
 RUN useradd -u 1000 -ms /bin/bash -g www www
 
-COPY . .
+COPY ./src /var/www/
 
-COPY --chown=www:www . .
+COPY --chown=www-data:www-data ./src /var/www
+RUN chown -R www-data:www-data /var/www
 
-USER www
+RUN composer update
+RUN composer install
+RUN chown -R www-data:www-data /var/www
+RUN php artisan config:cache
+RUN php artisan storage:link
+RUN php artisan clear-compiled
+
+USER www-data
 
 EXPOSE 9000
-
 CMD [ "php-fpm" ]
