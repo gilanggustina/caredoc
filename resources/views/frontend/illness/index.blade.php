@@ -12,11 +12,10 @@
                     <div class="row no-gutters">
                         <div class="col-md-4">
                           @if ($illness->image_name)
-                            <img class="card-img mt-10" src="{{Storage::url('images/'.$illness->image_name)}}" alt="{{'gambar penyakit '.$illness->name}}" title="{{'gambar penyakit '.$illness->name}}" >
+                            <img class="card-img mt-10" src="{{asset('images/'.$illness->image_name)}}" alt="{{'gambar penyakit '.$illness->name}}" title="{{'gambar penyakit '.$illness->name}}" >
                           @else
                             <img class="card-img mt-10" src="" alt="No Image">
                           @endif
-                            {{-- <img src="{{Storage::}}" class="card-img mt-10" alt="..."> --}}
                         </div>
                         <div class="col-md-8">
                             <div class="card-body">

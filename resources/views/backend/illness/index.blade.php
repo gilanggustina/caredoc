@@ -43,8 +43,8 @@
                   </tr>
               </thead>
               <tbody>
-                @forelse ($illnesses as $key => $illness)
-                    <tr>
+                  @forelse ($illnesses as $key => $illness)
+                  <tr>
                       <td>{{$key+1}}</td>
                       <td>{{$illness->name}}</td>
                       <td>{{$illness->description}}</td>
@@ -53,7 +53,7 @@
                       <td>{{$illness->treatment}}</td>
                       <td>
                         @if ($illness->image_name)
-                            <img src="{{Storage::url('images/'.$illness->image_name)}}" alt="{{'gambar penyakit '.$illness->name}}" style="width:100px" title="{{'gambar penyakit '.$illness->name}}" >
+                            <img src="{{asset('images/'.$illness->image_name)}}" alt="{{'gambar penyakit '.$illness->name}}" style="width:100px" title="{{'gambar penyakit '.$illness->name}}" >
                         @endif
                       </td>
                       <td>

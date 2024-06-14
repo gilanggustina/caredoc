@@ -48,7 +48,7 @@ services:
       - ./logs:/var/log/nginx
     networks:
       - caredoc
-      
+
 #NETWORK
 networks:
   caredoc:

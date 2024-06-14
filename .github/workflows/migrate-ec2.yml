@@ -48,7 +48,7 @@ jobs:
             fi
             git config --global user.name "${{ secrets.USERNAME_GITHUB }}"
             sudo usermod -aG docker $USER
-            sudo chmod -R 777 /var/w ww/caredoc/src
+            sudo chmod -R 777 /var/www/caredoc/src
             cd /var/www/caredoc/src
             git init
             git pull origin master

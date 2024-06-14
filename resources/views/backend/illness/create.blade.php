@@ -61,7 +61,7 @@
                     <div class="col-md-8">
                         <div class="float-left">
                             <label id="inputGroupFile01" class="btn btn-outline-secondary">
-                              <input type="file" for="inputGroupFile01" name="file">Upload</input>
+                              <input type="file" for="inputGroupFile01" accept="image/*" name="file">Upload</input>
                             </label>
                             @if ($errors->has('file'))
                               <span class="text-danger">{{ $errors->first('file') }}</span>
