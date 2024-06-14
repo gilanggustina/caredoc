@@ -40,10 +40,11 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
+            cd ~
             cd /var/www/caredoc
             if [ ! -d "src" ]; then
               git clone https://github.com/${{ secrets.USERNAME_GITHUB }}/${{ secrets.REPO_GITHUB }}.git
-              cp -r /var/www/caredoc/src/caredoc/* /var/www/caredoc/src/
+              cp -r /var/www/caredoc/src/caredoc/* /var/www/caredoc/src
               sudo rm -rf /var/www/caredoc/src/caredoc
             fi
             git config --global user.name "${{ secrets.USERNAME_GITHUB }}"
@@ -53,7 +54,7 @@ jobs:
             git init
             git pull origin master
             sudo chmod -R 777 storage
-            
+
       - name: Enable and start Docker on EC2
         uses: appleboy/ssh-action@master
         with:
