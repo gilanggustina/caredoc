@@ -46,6 +46,7 @@ jobs:
             if [ ! -d "src" ]; then
               if sudo git clone https://github.com/${{ secrets.USERNAME_GITHUB }}/${{ secrets.REPO_GITHUB }}.git src; then
                 echo "Repository cloned successfully."
+                sudo cp .env.example .env
               else
                 echo "Failed to clone repository. Check if the repository exists and the URL is correct."
                 exit 1
