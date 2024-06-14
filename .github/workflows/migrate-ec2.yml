@@ -40,10 +40,13 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
+            sudo mkdir -p /var/www/caredoc
+            sudo chown $USER /var/www/caredoc
             cd /var/www/caredoc
             if [ ! -d "src" ]; then
-              git clone https://github.com/${{ secrets.USERNAME_GITHUB }}/${{ secrets.REPO_GITHUB }}.git src
+              sudo git clone https://github.com/${{ secrets.USERNAME_GITHUB }}/${{ secrets.REPO_GITHUB }}.git src
             fi
+            sudo chown -R $USER src
             git -C src config user.name "${{ secrets.USERNAME_GITHUB }}"
             sudo usermod -aG docker $USER
             sudo chmod -R 777 src
