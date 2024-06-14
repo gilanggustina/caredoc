@@ -44,14 +44,24 @@ jobs:
             sudo chown $USER /var/www/caredoc
             cd /var/www/caredoc
             if [ ! -d "src" ]; then
-              sudo git clone https://github.com/${{ secrets.USERNAME_GITHUB }}/${{ secrets.REPO_GITHUB }}.git src
+              if sudo git clone https://github.com/${{ secrets.USERNAME_GITHUB }}/${{ secrets.REPO_GITHUB }}.git src; then
+                echo "Repository cloned successfully."
+              else
+                echo "Failed to clone repository. Check if the repository exists and the URL is correct."
+                exit 1
+              fi
             fi
-            sudo chown -R $USER src
-            git -C src config user.name "${{ secrets.USERNAME_GITHUB }}"
-            sudo usermod -aG docker $USER
-            sudo chmod -R 777 src
-            git -C src pull origin master
-            sudo chmod -R 777 src/storage
+            if [ -d "src" ]; then
+              sudo chown -R $USER src
+              git -C src config user.name "${{ secrets.USERNAME_GITHUB }}"
+              sudo usermod -aG docker $USER
+              sudo chmod -R 777 src
+              git -C src pull origin master
+              sudo chmod -R 777 src/storage
+            else
+              echo "Directory 'src' does not exist."
+              exit 1
+            fi
 
       - name: Enable and start Docker on EC2
         uses: appleboy/ssh-action@master
