@@ -45,7 +45,6 @@ RUN chown -R www-data:www-data /var/www
 
 RUN composer update
 RUN composer install
-RUN chown -R www-data:www-data /var/www
 RUN php artisan config:cache
 RUN php artisan storage:link
 RUN php artisan clear-compiled

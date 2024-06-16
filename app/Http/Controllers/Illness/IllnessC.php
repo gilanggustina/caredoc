@@ -37,7 +37,7 @@ class IllnessC extends Controller
             'symptom'       => ['required','string'],
             'reason'        => ['required','string'],
             'treatment'     => ['required','string'],
-            'file'          => ['required','image','mimes:jpeg,png,jpg,gif'],
+            'file'          => ['required','image','mimes:jpeg,png,jpg,gif','max:2048'],
         ]);
         // Handle file upload
         $fileName = null;
