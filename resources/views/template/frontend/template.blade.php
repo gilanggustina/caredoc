@@ -49,7 +49,7 @@
       <ul class="chatbox">
         <li class="chat incoming">
           <span class="material-symbols-outlined">smart_toy</span>
-          <p>Hi there 👋<br>How can I help you today?</p>
+          <p>Hi there 👋 <br>I am here to help answer your questions or concerns regarding your health. What are you feeling?</p>
         </li>
       </ul>
       <div class="chat-input">
