@@ -1,5 +1,27 @@
 @extends('template.frontend.template')
 @section('content')
+<a style="position: fixed;
+  bottom: 30px;
+  right: 105px;
+  outline: none;
+  border: none;
+  height: 50px;
+  width: auto;
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  background: #0098ff;
+  transition: all 0.2s ease;
+  color: white;
+  padding: 0px 10px;
+  z-index: 10"
+  href="https://si-manis.my.id/"
+  target="_blank">
+  <iconify-icon icon="ion:paper-plane" style="transform: scale(1.2)"></iconify-icon> &nbsp;
+  Visit For Consultan Diabetes
+</a>
     <div class="container-fluid p-6">
         <div class="row">
             <div class="col-sm-12">
@@ -42,6 +64,7 @@
                 </div>
                 <p class="note text-danger">catatan: "fitur suara hanya dapat berjalan pada browser chrome!"</p>
             </div>
+            {{-- <a target="_blank" href="" class="btn btn-primary">Play</button> --}}
         </div>
     </div>
     <!-- animasi bubble -->
