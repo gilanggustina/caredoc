@@ -16,7 +16,7 @@
     <a href="{!! route('backend.illness.index') !!}">
       <div class="block">
         <iconify-icon icon="fa6-solid:disease"></iconify-icon></i>
-        <span>Data Penyakit</span>
+        <span>Data Artkiel</span>
       </div>
     </a>
 

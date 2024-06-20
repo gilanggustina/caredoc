@@ -2,7 +2,7 @@
 @section('content')
   <div class="" style="margin-top:20px">
       <center>
-          <font size="6">Data Penyakit</font>
+          <font size="6">Data Artikel</font>
       </center>
       <hr>
       <br>
